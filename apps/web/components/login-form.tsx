@@ -12,9 +12,10 @@ import GithubButton from "./github-button"
 import Link from "next/link"
 
 export function LoginForm({
+  error,
   className,
   ...props
-}: React.ComponentProps<"form">) {
+}: { error: string } & React.ComponentProps<"form">) {
   return (
     <form className={cn("flex flex-col gap-6", className)} {...props}>
       <FieldGroup>
@@ -25,11 +26,12 @@ export function LoginForm({
           </p>
         </div>
         <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldLabel htmlFor="username">Username</FieldLabel>
           <Input
-            id="email"
-            type="email"
-            placeholder="m@example.com"
+            id="username"
+            name="username"
+            type="text"
+            placeholder=""
             required
             className="bg-background"
           />
@@ -46,10 +48,14 @@ export function LoginForm({
           </div>
           <Input
             id="password"
+            name="password"
             type="password"
             required
             className="bg-background"
           />
+          <FieldDescription>
+            { error ? <span className="text-red-500">{error}</span> : '' }
+          </FieldDescription>
         </Field>
         <Field>
           <Button type="submit">Login</Button>

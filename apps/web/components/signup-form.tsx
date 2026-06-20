@@ -29,8 +29,20 @@ export function SignupForm({
           <FieldLabel htmlFor="name">Full Name</FieldLabel>
           <Input
             id="name"
+            name="name"
             type="text"
             placeholder="John Doe"
+            required
+            className="bg-background"
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="username">Username</FieldLabel>
+          <Input
+            id="username"
+            name="username"
+            type="text"
+            placeholder="johndoe"
             required
             className="bg-background"
           />
@@ -39,6 +51,7 @@ export function SignupForm({
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
             id="email"
+            name="email"
             type="email"
             placeholder="m@example.com"
             required
@@ -54,6 +67,7 @@ export function SignupForm({
           <Input
             id="password"
             type="password"
+            name="password"
             required
             className="bg-background"
           />
@@ -65,6 +79,7 @@ export function SignupForm({
           <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
           <Input
             id="confirm-password"
+            name="confirm-password"
             type="password"
             required
             className="bg-background"
