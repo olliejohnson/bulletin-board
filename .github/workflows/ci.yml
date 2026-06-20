@@ -34,11 +34,6 @@ jobs:
       - name: Generate Prisma client
         run: pnpm --filter web exec prisma generate
 
-      - name: Check formatting
-        run: pnpm format:check
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Typecheck
-        run: pnpm typecheck
+      # Runs prettier --check, then turbo lint + typecheck (parallel, cached).
+      - name: Check (format, lint, typecheck)
+        run: pnpm check
