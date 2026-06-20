@@ -8,7 +8,8 @@
     "lint": "turbo lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "check": "prettier --check . && turbo run lint typecheck"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
