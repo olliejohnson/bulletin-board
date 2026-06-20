@@ -3,7 +3,6 @@ import { oauthProviderClient } from "@better-auth/oauth-provider/client"
 import {
   adminClient,
   jwtClient,
-  organizationClient,
   usernameClient,
 } from "better-auth/client/plugins"
 

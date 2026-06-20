@@ -47,8 +47,8 @@ export function SignupForm({
     validators: {
       onSubmit: formSchema,
     },
-    onSubmit: async ({ value, formApi }) => {
-      const { data, error } = await authClient.signUp.email({
+    onSubmit: async ({ value }) => {
+      await authClient.signUp.email({
         name: value.name,
         username: value.username,
         email: value.email,
