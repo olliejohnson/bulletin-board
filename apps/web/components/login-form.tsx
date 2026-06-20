@@ -54,7 +54,7 @@ export function LoginForm({
             className="bg-background"
           />
           <FieldDescription>
-            { error ? <span className="text-red-500">{error}</span> : '' }
+            {error ? <span className="text-red-500">{error}</span> : ""}
           </FieldDescription>
         </Field>
         <Field>
