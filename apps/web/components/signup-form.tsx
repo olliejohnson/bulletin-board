@@ -72,7 +72,7 @@ export function SignupForm({
             className="bg-background"
           />
           <FieldDescription>
-            {error || 'Must be at least 8 characters long.'}
+            {error || "Must be at least 8 characters long."}
           </FieldDescription>
         </Field>
         <Field>
