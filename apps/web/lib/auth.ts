@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth"
 import { prismaAdapter } from "@better-auth/prisma-adapter"
 import { prisma } from "./prisma"
-import { admin, jwt, organization, username } from "better-auth/plugins"
+import { admin, jwt, username } from "better-auth/plugins"
 import { apiKey } from "@better-auth/api-key"
 import { oauthProvider } from "@better-auth/oauth-provider"
 

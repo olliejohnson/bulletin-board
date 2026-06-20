@@ -16,24 +16,26 @@ import { useForm } from "@tanstack/react-form"
 import { authClient } from "@/lib/auth-client"
 import { redirect } from "next/navigation"
 
-const formSchema = z.object({
-  name: z.string(),
-  username: z.string()
-    .min(3, "Username must be at least 3 characters long.")
-    .max(30, "Username must be at most 30 characters long."),
-  email: z.email(),
-  password: z.string()
-    .min(8, "Password must be at least 8 characters long."),
-  confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-  error: "Passwords must match"
-})
+const formSchema = z
+  .object({
+    name: z.string(),
+    username: z
+      .string()
+      .min(3, "Username must be at least 3 characters long.")
+      .max(30, "Username must be at most 30 characters long."),
+    email: z.email(),
+    password: z.string().min(8, "Password must be at least 8 characters long."),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    error: "Passwords must match",
+    path: ["confirmPassword"],
+  })
 
 export function SignupForm({
-  error,
   className,
   ...props
-}: { error: string } & React.ComponentProps<"form">) {
+}: React.ComponentProps<"form">) {
   const form = useForm({
     defaultValues: {
       name: "",
@@ -43,26 +45,30 @@ export function SignupForm({
       confirmPassword: "",
     },
     validators: {
-      onSubmit: formSchema
+      onSubmit: formSchema,
     },
-    onSubmit: async ({ value, formApi }) => {
-      const { data, error } = await authClient.signUp.email({
+    onSubmit: async ({ value }) => {
+      await authClient.signUp.email({
         name: value.name,
         username: value.username,
         email: value.email,
-        password: value.password
+        password: value.password,
       })
 
       redirect("/")
-    }
+    },
   })
 
   return (
-    <form className={cn("flex flex-col gap-6", className)} onSubmit={(e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      form.handleSubmit()
-    }} {...props}>
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        form.handleSubmit()
+      }}
+      {...props}
+    >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Create your account</h1>
@@ -71,25 +77,28 @@ export function SignupForm({
           </p>
         </div>
         <form.Field name="name">
-        {(field) => (<Field>
-            <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
-            <Input
-              id={field.name}
-              name={field.name}
-              type="text"
-              placeholder="John Doe"
-              required
-              className="bg-background"
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-              aria-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
-            />
-            {(field.state.meta.isTouched && !field.state.meta.isValid) && (
-              <FieldError errors={field.state.meta.errors} />
-            )}
-          </Field>
-        )}
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                type="text"
+                placeholder="John Doe"
+                required
+                className="bg-background"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                }
+              />
+              {field.state.meta.isTouched && !field.state.meta.isValid && (
+                <FieldError errors={field.state.meta.errors} />
+              )}
+            </Field>
+          )}
         </form.Field>
         <form.Field name="username">
           {(field) => (
@@ -105,9 +114,11 @@ export function SignupForm({
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
+                aria-invalid={
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                }
               />
-              {(field.state.meta.isTouched && !field.state.meta.isValid) && (
+              {field.state.meta.isTouched && !field.state.meta.isValid && (
                 <FieldError errors={field.state.meta.errors} />
               )}
             </Field>
@@ -127,9 +138,11 @@ export function SignupForm({
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
+                aria-invalid={
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                }
               />
-              {(field.state.meta.isTouched && !field.state.meta.isValid) && (
+              {field.state.meta.isTouched && !field.state.meta.isValid && (
                 <FieldError errors={field.state.meta.errors} />
               )}
               <FieldDescription>
@@ -152,19 +165,22 @@ export function SignupForm({
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
+                aria-invalid={
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                }
               />
-              {(field.state.meta.isTouched && !field.state.meta.isValid) && (
+              {field.state.meta.isTouched && !field.state.meta.isValid && (
                 <FieldError errors={field.state.meta.errors} />
               )}
             </Field>
           )}
         </form.Field>
-        <form.Field 
+        <form.Field
           name="confirmPassword"
           validators={{
-            onChangeListenTo: ["password"]
-          }}>
+            onChangeListenTo: ["password"],
+          }}
+        >
           {(field) => (
             <Field>
               <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
@@ -177,22 +193,20 @@ export function SignupForm({
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
+                aria-invalid={
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                }
               />
-              {(field.state.meta.isTouched && !field.state.meta.isValid) && (
+              {field.state.meta.isTouched && !field.state.meta.isValid && (
                 <FieldError errors={field.state.meta.errors} />
               )}
               <FieldDescription>Please confirm your password.</FieldDescription>
             </Field>
           )}
         </form.Field>
-        <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-          {([canSubmit, isSubmitting]) => (
-            <Field>
-              <Button type="submit" disabled={!canSubmit}>{isSubmitting ? '...' : 'Create Account'}</Button>
-            </Field>
-          )}
-        </form.Subscribe>
+        <Field>
+          <Button type="submit">Create Account</Button>
+        </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
           <GithubButton signup={true} />

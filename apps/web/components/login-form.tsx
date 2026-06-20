@@ -17,11 +17,11 @@ import { authClient } from "@/lib/auth-client"
 import { redirect } from "next/navigation"
 
 const formSchema = z.object({
-    username: z.string()
-      .min(3, "Username must be at least 3 characters long.")
-      .max(30, "Username must be at most 30 characters long."),
-    password: z.string()
-      .min(8, "Password must be at least 8 characters long.")
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters long.")
+    .max(30, "Username must be at most 30 characters long."),
+  password: z.string().min(8, "Password must be at least 8 characters long."),
 })
 
 export function LoginForm({
@@ -37,27 +37,31 @@ export function LoginForm({
       onSubmit: formSchema,
     },
     onSubmit: async ({ value, formApi }) => {
-      const { data, error } = await authClient.signIn.username({
+      const { error } = await authClient.signIn.username({
         username: value.username,
-        password: value.password
+        password: value.password,
       })
 
       if (error) {
         formApi.setErrorMap({
-          onSubmit: { form: "Invalid username or password", fields: {} }
+          onSubmit: { form: "Invalid username or password", fields: {} },
         })
       }
 
       redirect("/")
-    }
+    },
   })
 
   return (
-    <form className={cn("flex flex-col gap-6", className)} onSubmit={(e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      form.handleSubmit()
-    }} {...props}>
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        form.handleSubmit()
+      }}
+      {...props}
+    >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Login to your account</h1>
@@ -79,9 +83,11 @@ export function LoginForm({
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
+                aria-invalid={
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                }
               />
-              {(field.state.meta.isTouched && !field.state.meta.isValid) && (
+              {field.state.meta.isTouched && !field.state.meta.isValid && (
                 <FieldError errors={field.state.meta.errors} />
               )}
             </Field>
@@ -108,9 +114,11 @@ export function LoginForm({
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
+                aria-invalid={
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                }
               />
-              {(field.state.meta.isTouched && !field.state.meta.isValid) && (
+              {field.state.meta.isTouched && !field.state.meta.isValid && (
                 <FieldError errors={field.state.meta.errors} />
               )}
             </Field>
