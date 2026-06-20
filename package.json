@@ -9,7 +9,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "turbo typecheck",
-    "check": "prettier --check . && turbo run lint typecheck",
+    "check": "prettier --check . && turbo run lint typecheck test",
     "prepare": "husky"
   },
   "devDependencies": {

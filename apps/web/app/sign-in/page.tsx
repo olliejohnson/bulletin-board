@@ -1,15 +1,10 @@
 "use client"
 import { LoginForm } from "@/components/login-form"
+import { signInSchema } from "@/app/sign-in/schema"
 import { authClient } from "@/lib/auth-client"
 import { IconFoldersFilled } from "@tabler/icons-react"
 import { redirect } from "next/navigation"
 import { SubmitEvent, useState } from "react"
-import z from "zod"
-
-const signInSchema = z.object({
-  username: z.string(),
-  password: z.string().min(8, "Password must be at least 8 characters long."),
-})
 
 export default function Page() {
   const [error, setError] = useState("")
