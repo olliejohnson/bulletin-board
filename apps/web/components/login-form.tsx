@@ -1,76 +1,60 @@
-import { cn } from "@workspace/ui/lib/utils"
-import { Button } from "@workspace/ui/components/button"
 import {
   Field,
   FieldDescription,
-  FieldGroup,
   FieldLabel,
-  FieldSeparator,
 } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
-import GithubButton from "./github-button"
-import Link from "next/link"
+import { AuthForm } from "./auth-form"
 
 export function LoginForm({
   error,
-  className,
   ...props
 }: { error: string } & React.ComponentProps<"form">) {
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
-      <FieldGroup>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Login to your account</h1>
-          <p className="text-sm text-balance text-muted-foreground">
-            Enter your email below to login to your account
-          </p>
+    <AuthForm
+      title="Login to your account"
+      description="Enter your email below to login to your account"
+      submitLabel="Login"
+      githubSignup={false}
+      footer={{
+        prompt: "Don't have an account?",
+        linkLabel: "Sign up",
+        linkHref: "/sign-up",
+      }}
+      {...props}
+    >
+      <Field>
+        <FieldLabel htmlFor="username">Username</FieldLabel>
+        <Input
+          id="username"
+          name="username"
+          type="text"
+          placeholder=""
+          required
+          className="bg-background"
+        />
+      </Field>
+      <Field>
+        <div className="flex items-center">
+          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <a
+            href="#"
+            className="ml-auto text-sm underline-offset-4 hover:underline"
+          >
+            Forgot your password?
+          </a>
         </div>
-        <Field>
-          <FieldLabel htmlFor="username">Username</FieldLabel>
-          <Input
-            id="username"
-            name="username"
-            type="text"
-            placeholder=""
-            required
-            className="bg-background"
-          />
-        </Field>
-        <Field>
-          <div className="flex items-center">
-            <FieldLabel htmlFor="password">Password</FieldLabel>
-            <a
-              href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
-            >
-              Forgot your password?
-            </a>
-          </div>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            required
-            className="bg-background"
-          />
-          <FieldDescription>
-            {error ? <span className="text-red-500">{error}</span> : ""}
-          </FieldDescription>
-        </Field>
-        <Field>
-          <Button type="submit">Login</Button>
-        </Field>
-        <FieldSeparator>Or continue with</FieldSeparator>
-        <Field>
-          <GithubButton signup={false} />
-          <FieldDescription className="text-center">
-            Don&apos;t have an account?{" "}
-            <Link href="/sign-up" className="underline underline-offset-4">
-              Sign up
-            </Link>
-          </FieldDescription>
-        </Field>
-      </FieldGroup>
-    </form>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          required
+          className="bg-background"
+        />
+        <FieldDescription>
+          {error ? <span className="text-red-500">{error}</span> : ""}
+        </FieldDescription>
+      </Field>
+    </AuthForm>
   )
 }
