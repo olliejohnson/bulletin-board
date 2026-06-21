@@ -45,7 +45,7 @@ describe("updatePostCategoryAction", () => {
     getCurrentUser.mockResolvedValue(null)
     const result = await updatePostCategoryAction(
       {},
-      form({ postId: "p1", categoryId: "c2" })
+      { postId: "p1", categoryId: "c2" }
     )
     expect(result.error).toMatch(/signed in/i)
     expect(setPostCategory).not.toHaveBeenCalled()
@@ -55,7 +55,7 @@ describe("updatePostCategoryAction", () => {
     getCurrentUser.mockResolvedValue({ id: "someone-else", role: "user" })
     const result = await updatePostCategoryAction(
       {},
-      form({ postId: "p1", categoryId: "c2" })
+      { postId: "p1", categoryId: "c2" }
     )
     expect(result.error).toMatch(/only the author/i)
     expect(setPostCategory).not.toHaveBeenCalled()
@@ -66,7 +66,7 @@ describe("updatePostCategoryAction", () => {
     getPost.mockResolvedValue(null)
     const result = await updatePostCategoryAction(
       {},
-      form({ postId: "missing", categoryId: "c2" })
+      { postId: "missing", categoryId: "c2" }
     )
     expect(result.error).toMatch(/not found/i)
     expect(setPostCategory).not.toHaveBeenCalled()
@@ -77,7 +77,7 @@ describe("updatePostCategoryAction", () => {
     categoryExists.mockResolvedValue(false)
     const result = await updatePostCategoryAction(
       {},
-      form({ postId: "p1", categoryId: "ghost" })
+      { postId: "p1", categoryId: "ghost" }
     )
     expect(result.error).toMatch(/no longer exists/i)
     expect(setPostCategory).not.toHaveBeenCalled()
@@ -87,7 +87,7 @@ describe("updatePostCategoryAction", () => {
     getCurrentUser.mockResolvedValue({ id: "u1", role: "user" })
     const result = await updatePostCategoryAction(
       {},
-      form({ postId: "p1", categoryId: "c2" })
+      { postId: "p1", categoryId: "c2" }
     )
     expect(setPostCategory).toHaveBeenCalledWith("p1", "c2")
     expect(revalidatePath).toHaveBeenCalledWith("/board/p1")

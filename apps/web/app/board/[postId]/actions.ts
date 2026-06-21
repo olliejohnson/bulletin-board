@@ -14,24 +14,21 @@ const schema = z.object({
 
 export type UpdateCategoryState = { error?: string; ok?: boolean }
 
+interface UpdatePostCategoryActionProps {
+  categoryId: string
+  postId: string
+}
+
 export async function updatePostCategoryAction(
   _prevState: UpdateCategoryState,
-  formData: FormData
+  data: UpdatePostCategoryActionProps
 ): Promise<UpdateCategoryState> {
   const user = await getCurrentUser()
   if (!user) {
     return { error: "You must be signed in." }
   }
 
-  const parsed = schema.safeParse({
-    postId: String(formData.get("postId") ?? ""),
-    categoryId: String(formData.get("categoryId") ?? ""),
-  })
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." }
-  }
-
-  const post = await getPost(parsed.data.postId)
+  const post = await getPost(data.postId)
   if (!post) {
     return { error: "Post not found." }
   }
@@ -41,12 +38,12 @@ export async function updatePostCategoryAction(
     return { error: "Only the author can change the category." }
   }
 
-  if (!(await categoryExists(parsed.data.categoryId))) {
+  if (!(await categoryExists(data.categoryId))) {
     return { error: "That category no longer exists." }
   }
 
-  await setPostCategory(parsed.data.postId, parsed.data.categoryId)
-  revalidatePath(`/board/${parsed.data.postId}`)
+  await setPostCategory(data.postId, data.categoryId)
+  revalidatePath(`/board/${data.postId}`)
   revalidatePath("/board")
   return { ok: true }
 }

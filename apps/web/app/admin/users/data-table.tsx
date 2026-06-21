@@ -28,6 +28,8 @@ import {
 } from "@workspace/ui/components/table"
 import { useState } from "react"
 import { getData } from "./page"
+import { Button } from "@workspace/ui/components/button"
+import { IconRefresh } from "@tabler/icons-react"
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
@@ -89,6 +91,16 @@ export function DataTable<TData, TValue>({
         <div className="ml-auto flex items-center space-x-1.5">
           <NewUserButton />
           <DataTableViewOptions table={table} />
+          <Button
+            className="hidden h-8 lg:flex"
+            variant="outline"
+            size="icon"
+            onClick={() => {
+              table.options.meta?.updateData()
+            }}
+          >
+            <IconRefresh />
+          </Button>
         </div>
       </div>
       <div className="overflow-hidden rounded-md border">
