@@ -24,7 +24,7 @@ jobs:
               issue_number: context.payload.pull_request.number,
             });
 
-            const keyword = "@no-delete"
+            const keyword = "!no-delete"
 
             const hasKeyword = comments.some(comment =>
               commend.body.toLowerCase().includes(keyword.toLowerCase())
