@@ -1,0 +1,16 @@
+# Throwaway Postgres for local e2e runs. Brought up/down by e2e/run-local.sh.
+# Uses port 5433 so it never collides with a local Postgres on 5432.
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bulletin_test
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bulletin_test"]
+      interval: 1s
+      timeout: 5s
+      retries: 30
