@@ -1,0 +1,56 @@
+name: E2E
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: e2e-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Playwright
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bulletin_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d bulletin_test"
+          --health-interval 1s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5433/bulletin_test?schema=public
+      E2E_PORT: "3100"
+      NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3100
+      BETTER_AUTH_URL: http://localhost:3100
+      BETTER_AUTH_SECRET: e2e-secret-not-for-production
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: .
+      - name: Generate Prisma client
+        run: pnpm exec prisma generate
+      - name: Migrate + seed test DB
+        run: pnpm exec prisma migrate deploy && pnpm exec prisma db seed
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run e2e
+        run: pnpm e2e
