@@ -35,14 +35,20 @@ describe("getFeed", () => {
 })
 
 describe("createPost", () => {
-  it("creates a published post with the given author and fields", () => {
-    createPost({ authorId: "u1", title: "Hello", content: "Body" })
+  it("creates a published post with author, fields, and connected category", () => {
+    createPost({
+      authorId: "u1",
+      title: "Hello",
+      content: "Body",
+      categoryId: "c1",
+    })
     expect(create).toHaveBeenCalledWith({
       data: {
         title: "Hello",
         content: "Body",
         authorId: "u1",
         published: true,
+        categories: { connect: { id: "c1" } },
       },
     })
   })

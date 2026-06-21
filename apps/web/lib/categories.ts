@@ -15,3 +15,11 @@ export function getCategories() {
     orderBy: { name: "asc" },
   })
 }
+
+export async function categoryExists(id: string): Promise<boolean> {
+  const found = await prisma.category.findUnique({
+    where: { id },
+    select: { id: true },
+  })
+  return found !== null
+}

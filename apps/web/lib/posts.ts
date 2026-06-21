@@ -25,6 +25,7 @@ export function createPost(input: {
   authorId: string
   title: string
   content?: string
+  categoryId: string
 }) {
   return prisma.post.create({
     data: {
@@ -33,6 +34,7 @@ export function createPost(input: {
       authorId: input.authorId,
       // Published immediately for now — no draft flow yet.
       published: true,
+      categories: { connect: { id: input.categoryId } },
     },
   })
 }

@@ -7,7 +7,11 @@ import { createPostAction, type ComposeState } from "./actions"
 
 const initialState: ComposeState = {}
 
-export function ComposeForm() {
+type ComposeFormProps = {
+  categories: { id: string; name: string }[]
+}
+
+export function ComposeForm({ categories }: ComposeFormProps) {
   const [state, formAction, pending] = useActionState(
     createPostAction,
     initialState
@@ -27,6 +31,22 @@ export function ComposeForm() {
         className="bg-background"
         aria-invalid={Boolean(state.error)}
       />
+      <select
+        name="categoryId"
+        required
+        defaultValue=""
+        aria-label="Category"
+        className="mt-2 h-8 w-full rounded-md border bg-background px-2 text-sm shadow-xs outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      >
+        <option value="" disabled>
+          Choose a category…
+        </option>
+        {categories.map((c) => (
+          <option key={c.id} value={c.id}>
+            ~{c.name}
+          </option>
+        ))}
+      </select>
       <textarea
         name="content"
         rows={3}

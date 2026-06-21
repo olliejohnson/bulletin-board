@@ -1,14 +1,20 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 
-const { findMany } = vi.hoisted(() => ({ findMany: vi.fn() }))
-
-vi.mock("@/lib/prisma", () => ({
-  prisma: { category: { findMany } },
+const { findMany, findUnique } = vi.hoisted(() => ({
+  findMany: vi.fn(),
+  findUnique: vi.fn(),
 }))
 
-import { getCategories } from "./categories"
+vi.mock("@/lib/prisma", () => ({
+  prisma: { category: { findMany, findUnique } },
+}))
 
-beforeEach(() => findMany.mockReset())
+import { getCategories, categoryExists } from "./categories"
+
+beforeEach(() => {
+  findMany.mockReset()
+  findUnique.mockReset()
+})
 
 describe("getCategories", () => {
   it("selects post counts and orders by name", () => {
@@ -21,5 +27,21 @@ describe("getCategories", () => {
         orderBy: { name: "asc" },
       })
     )
+  })
+})
+
+describe("categoryExists", () => {
+  it("returns true when the category is found", async () => {
+    findUnique.mockResolvedValue({ id: "c1" })
+    expect(await categoryExists("c1")).toBe(true)
+    expect(findUnique).toHaveBeenCalledWith({
+      where: { id: "c1" },
+      select: { id: true },
+    })
+  })
+
+  it("returns false when the category is not found", async () => {
+    findUnique.mockResolvedValue(null)
+    expect(await categoryExists("missing")).toBe(false)
   })
 })

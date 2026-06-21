@@ -61,7 +61,7 @@ export default async function Page() {
 
         {/* Center: compose + feed */}
         <main className="min-w-0">
-          <ComposeForm />
+          <ComposeForm categories={categories} />
 
           <ul className="mt-6 space-y-4">
             {posts.length === 0 ? (
