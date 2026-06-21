@@ -48,7 +48,7 @@ export function LoginForm({
         })
       }
 
-      redirect("/")
+      redirect("/board")
     },
   })
 
