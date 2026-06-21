@@ -1,6 +1,7 @@
 "use client"
 
 import { DataTableColumnHeader } from "@/components/data-table-column-header"
+import { Relative } from "@/components/relative-date"
 import { User } from "@/generated/prisma/client"
 import { authClient } from "@/lib/auth-client"
 import {
@@ -25,6 +26,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip"
+import Link from "next/link"
+import { redirect } from "next/navigation"
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -52,6 +60,15 @@ export const columns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
+    cell: ({ row }) => {
+      const user = row.original
+
+      return (
+        <Link href={`/admin/users/${user.id}`} className="hover:underline">
+          {user.name}
+        </Link>
+      )
+    },
   },
   {
     accessorKey: "username",
@@ -149,6 +166,22 @@ export const columns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created At" />
     ),
+    cell: ({ row }) => {
+      const user = row.original
+
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span>
+              <Relative date={user.createdAt} />
+            </span>
+          </TooltipTrigger>
+          <TooltipContent side="left">
+            <p className="text-sm">{user.createdAt.toLocaleString()}</p>
+          </TooltipContent>
+        </Tooltip>
+      )
+    },
   },
   {
     id: "actions",
@@ -171,7 +204,13 @@ export const columns: ColumnDef<User>[] = [
               Copy User ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View Details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                redirect(`/admin/users/${user.id}`)
+              }}
+            >
+              View Details
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={async () => {
                 if (user.banned) {
