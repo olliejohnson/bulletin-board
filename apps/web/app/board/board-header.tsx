@@ -1,13 +1,12 @@
-import { headers } from "next/headers"
 import Link from "next/link"
 import { IconFoldersFilled } from "@tabler/icons-react"
-import { auth } from "@/lib/auth"
+import { getCurrentUser } from "@/lib/session"
 
 // Shared board header (server component). Fetches the session itself so pages
 // don't have to thread the viewer through.
 export async function BoardHeader() {
-  const session = await auth.api.getSession({ headers: await headers() })
-  const viewer = session?.user?.name ?? session?.user?.email ?? "you"
+  const user = await getCurrentUser()
+  const viewer = user?.name ?? user?.email ?? "you"
 
   return (
     <header className="border-b">
