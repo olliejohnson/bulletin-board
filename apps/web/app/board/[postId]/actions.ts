@@ -1,16 +1,10 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
 import { categoryExists } from "@/lib/categories"
 import { canChangePostCategory } from "@/lib/permissions"
 import { getPost, setPostCategory } from "@/lib/posts"
 import { getCurrentUser } from "@/lib/session"
-
-const schema = z.object({
-  postId: z.string().min(1),
-  categoryId: z.string().min(1, "Choose a category."),
-})
 
 export type UpdateCategoryState = { error?: string; ok?: boolean }
 

@@ -22,12 +22,6 @@ vi.mock("next/cache", () => ({ revalidatePath }))
 
 import { updatePostCategoryAction } from "./actions"
 
-function form(fields: Record<string, string>) {
-  const fd = new FormData()
-  for (const [k, v] of Object.entries(fields)) fd.set(k, v)
-  return fd
-}
-
 const authorPost = { id: "p1", authorId: "u1" }
 
 beforeEach(() => {
