@@ -36,7 +36,7 @@ test("sign up, post to General, and open the post", async ({ page }) => {
 
   await expect(page).toHaveURL(/\/board\/.+/)
   await expect(page.getByRole("heading", { name: title })).toBeVisible()
-  await expect(page.getByText("Replies")).toBeVisible()
+  await expect(page.getByRole("heading", { name: "Replies" })).toBeVisible()
 })
 
 test("redirects an unauthenticated visitor to sign-in", async ({ page }) => {
