@@ -1,21 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 
-const { findMany, create, findUnique } = vi.hoisted(() => ({
+const { findMany, create, findUnique, update } = vi.hoisted(() => ({
   findMany: vi.fn(),
   create: vi.fn(),
   findUnique: vi.fn(),
+  update: vi.fn(),
 }))
 
 vi.mock("@/lib/prisma", () => ({
-  prisma: { post: { findMany, create, findUnique } },
+  prisma: { post: { findMany, create, findUnique, update } },
 }))
 
-import { getFeed, createPost, getPost } from "./posts"
+import { getFeed, createPost, getPost, setPostCategory } from "./posts"
 
 beforeEach(() => {
   findMany.mockReset()
   create.mockReset()
   findUnique.mockReset()
+  update.mockReset()
 })
 
 describe("getFeed", () => {
@@ -68,5 +70,15 @@ describe("getPost", () => {
         }),
       })
     )
+  })
+})
+
+describe("setPostCategory", () => {
+  it("replaces the post's categories with exactly the given one", () => {
+    setPostCategory("p1", "c2")
+    expect(update).toHaveBeenCalledWith({
+      where: { id: "p1" },
+      data: { categories: { set: [{ id: "c2" }] } },
+    })
   })
 })

@@ -54,3 +54,12 @@ export function getPost(id: string) {
     },
   })
 }
+
+// Replace the post's categories with exactly the given one (single-category
+// model over the many-to-many). Authorization is enforced by the caller.
+export function setPostCategory(postId: string, categoryId: string) {
+  return prisma.post.update({
+    where: { id: postId },
+    data: { categories: { set: [{ id: categoryId }] } },
+  })
+}

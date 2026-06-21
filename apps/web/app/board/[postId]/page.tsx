@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { IconArrowLeft, IconMessageCircle } from "@tabler/icons-react"
+import { getCategories } from "@/lib/categories"
+import { canChangePostCategory } from "@/lib/permissions"
 import { getPost } from "@/lib/posts"
+import { getCurrentUser } from "@/lib/session"
 import { BoardHeader } from "../board-header"
 import { authorName, timeAgo } from "../format"
+import { CategoryEditor } from "./category-editor"
 
 export default async function Page({
   params,
@@ -11,8 +15,13 @@ export default async function Page({
   params: Promise<{ postId: string }>
 }) {
   const { postId } = await params
-  const post = await getPost(postId)
+  const [user, post, categories] = await Promise.all([
+    getCurrentUser(),
+    getPost(postId),
+    getCategories(),
+  ])
   if (!post) notFound()
+  const canEdit = canChangePostCategory(user, post)
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -37,6 +46,13 @@ export default async function Page({
             <span>by {authorName(post.author)}</span>
             <span>{timeAgo(post.createdAt)}</span>
           </p>
+          {canEdit ? (
+            <CategoryEditor
+              postId={post.id}
+              currentCategoryId={post.categories[0]?.id}
+              categories={categories}
+            />
+          ) : null}
           {post.content ? (
             <div className="mt-4 text-sm whitespace-pre-wrap">
               {post.content}
