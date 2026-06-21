@@ -3,7 +3,7 @@ import { IconMessageCircle } from "@tabler/icons-react"
 import { getCategories } from "@/lib/categories"
 import { getFeed } from "@/lib/posts"
 import { BoardHeader } from "./board-header"
-import { ComposeForm } from "./compose-form"
+import { Compose } from "./compose"
 import { authorName, timeAgo } from "./format"
 
 export default async function Page() {
@@ -40,7 +40,7 @@ export default async function Page() {
 
         {/* Center: compose + feed */}
         <main className="min-w-0">
-          <ComposeForm categories={categories} />
+          <Compose categories={categories} />
 
           <ul className="mt-6 space-y-4">
             {posts.length === 0 ? (
