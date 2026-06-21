@@ -23,11 +23,12 @@ test("sign up, post to General, and open the post", async ({ page }) => {
   // lands on the board
   await expect(page).toHaveURL(/\/board$/)
 
-  // --- compose a post in General ---
+  // --- compose a post in General (reveal the form, then submit) ---
   const title = `E2E post ${stamp}`
+  await page.getByRole("button", { name: "Post a Topic" }).click()
   await page.getByPlaceholder("Title").fill(title)
   await page.getByLabel("Category").selectOption({ label: "~General" })
-  await page.getByRole("button", { name: "New post" }).click()
+  await page.getByRole("button", { name: "Post", exact: true }).click()
 
   // --- it appears in the feed; open the detail view ---
   const postLink = page.getByRole("link", { name: title })

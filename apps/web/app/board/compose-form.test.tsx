@@ -16,7 +16,7 @@ describe("ComposeForm", () => {
     render(<ComposeForm categories={categories} />)
     expect(screen.getByPlaceholderText("Title")).toBeInTheDocument()
     expect(screen.getByPlaceholderText(/say something/i)).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "New post" })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Post" })).toBeInTheDocument()
   })
 
   it("marks the title as required", () => {

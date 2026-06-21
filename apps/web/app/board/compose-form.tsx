@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { createPostAction, type ComposeState } from "./actions"
@@ -9,25 +9,32 @@ const initialState: ComposeState = {}
 
 type ComposeFormProps = {
   categories: { id: string; name: string }[]
+  onPosted?: () => void
+  onCancel?: () => void
 }
 
-export function ComposeForm({ categories }: ComposeFormProps) {
+export function ComposeForm({
+  categories,
+  onPosted,
+  onCancel,
+}: ComposeFormProps) {
   const [state, formAction, pending] = useActionState(
     createPostAction,
     initialState
   )
 
+  useEffect(() => {
+    if (state.ok) onPosted?.()
+  }, [state.ok, onPosted])
+
   return (
-    <form
-      action={formAction}
-      className="rounded-lg border bg-card p-3"
-      key={state.ok ? "posted" : "compose"}
-    >
+    <form action={formAction} className="rounded-lg border bg-card p-3">
       <Input
         name="title"
         placeholder="Title"
         required
         maxLength={200}
+        autoFocus
         className="bg-background"
         aria-invalid={Boolean(state.error)}
       />
@@ -56,9 +63,22 @@ export function ComposeForm({ categories }: ComposeFormProps) {
       />
       <div className="mt-2 flex items-center justify-between gap-2">
         <span className="text-xs text-destructive">{state.error ?? ""}</span>
-        <Button type="submit" size="sm" disabled={pending}>
-          {pending ? "Posting…" : "New post"}
-        </Button>
+        <div className="flex items-center gap-2">
+          {onCancel ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={onCancel}
+              disabled={pending}
+            >
+              Cancel
+            </Button>
+          ) : null}
+          <Button type="submit" size="sm" disabled={pending}>
+            {pending ? "Posting…" : "Post"}
+          </Button>
+        </div>
       </div>
     </form>
   )
