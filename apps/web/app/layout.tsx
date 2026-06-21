@@ -29,9 +29,9 @@ export default function RootLayout({
       )}
     >
       <body>
-        <TooltipProvider>
-          <ThemeProvider>{children}</ThemeProvider>
-        </TooltipProvider>
+        <ThemeProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
