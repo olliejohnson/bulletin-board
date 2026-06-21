@@ -55,7 +55,7 @@ export function SignupForm({
         password: value.password,
       })
 
-      redirect("/")
+      redirect("/board")
     },
   })
 
