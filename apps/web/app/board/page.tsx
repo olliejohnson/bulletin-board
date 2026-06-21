@@ -3,28 +3,9 @@ import Link from "next/link"
 import { IconFoldersFilled, IconMessageCircle } from "@tabler/icons-react"
 import { auth } from "@/lib/auth"
 import { getCategories } from "@/lib/categories"
-import { getFeed, type FeedPost } from "@/lib/posts"
+import { getFeed } from "@/lib/posts"
 import { ComposeForm } from "./compose-form"
-
-function authorName(author: FeedPost["author"]) {
-  return author.displayUsername ?? author.username ?? author.name
-}
-
-function timeAgo(date: Date) {
-  const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
-  const units: [Intl.RelativeTimeFormatUnit, number][] = [
-    ["year", 31536000],
-    ["month", 2592000],
-    ["day", 86400],
-    ["hour", 3600],
-    ["minute", 60],
-  ]
-  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" })
-  for (const [unit, secs] of units) {
-    if (seconds >= secs) return rtf.format(-Math.floor(seconds / secs), unit)
-  }
-  return "just now"
-}
+import { authorName, timeAgo } from "./format"
 
 export default async function Page() {
   const [session, posts, categories] = await Promise.all([
