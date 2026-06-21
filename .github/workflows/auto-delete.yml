@@ -27,7 +27,7 @@ jobs:
             const keyword = "@no-delete"
 
             const hasKeyword = comments.some(comment =>
-              commend.body.toLowerCase().includes(keyword.toLowerCase()))
+              commend.body.toLowerCase().includes(keyword.toLowerCase())
             );
 
             core.setOutput("delete", hasKeyword ? "false" : "true");
