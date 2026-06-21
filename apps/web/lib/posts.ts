@@ -38,3 +38,19 @@ export function createPost(input: {
     },
   })
 }
+
+export type PostDetail = NonNullable<Awaited<ReturnType<typeof getPost>>>
+
+// A single post with its author and categories. Returns null if not found.
+// (Replies/threading will be added here later.)
+export function getPost(id: string) {
+  return prisma.post.findUnique({
+    where: { id },
+    include: {
+      author: {
+        select: { username: true, displayUsername: true, name: true },
+      },
+      categories: { select: { id: true, name: true } },
+    },
+  })
+}

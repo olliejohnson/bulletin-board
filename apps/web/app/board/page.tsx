@@ -1,38 +1,17 @@
-import { headers } from "next/headers"
 import Link from "next/link"
-import { IconFoldersFilled, IconMessageCircle } from "@tabler/icons-react"
-import { auth } from "@/lib/auth"
+import { IconMessageCircle } from "@tabler/icons-react"
 import { getCategories } from "@/lib/categories"
 import { getFeed } from "@/lib/posts"
+import { BoardHeader } from "./board-header"
 import { ComposeForm } from "./compose-form"
 import { authorName, timeAgo } from "./format"
 
 export default async function Page() {
-  const [session, posts, categories] = await Promise.all([
-    auth.api.getSession({ headers: await headers() }),
-    getFeed(),
-    getCategories(),
-  ])
-  const viewer = session?.user?.name ?? session?.user?.email ?? "you"
+  const [posts, categories] = await Promise.all([getFeed(), getCategories()])
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="border-b">
-        <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-2">
-          <Link href="/board" className="flex items-center gap-2 font-semibold">
-            <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <IconFoldersFilled className="size-4" />
-            </div>
-            Bulletin Board
-          </Link>
-          <div className="ml-auto flex items-center gap-3 text-sm">
-            <span className="text-muted-foreground">{viewer}</span>
-            <Link href="/log-out" className="hover:underline">
-              Log out
-            </Link>
-          </div>
-        </div>
-      </header>
+      <BoardHeader />
 
       <div className="mx-auto grid w-full max-w-6xl flex-1 gap-6 px-4 py-6 lg:grid-cols-[12rem_1fr]">
         {/* Left: categories */}
@@ -71,7 +50,14 @@ export default async function Page() {
             ) : (
               posts.map((post) => (
                 <li key={post.id} className="border-b pb-4 last:border-b-0">
-                  <h2 className="font-medium">{post.title}</h2>
+                  <h2 className="font-medium">
+                    <Link
+                      href={`/board/${post.id}`}
+                      className="hover:underline"
+                    >
+                      {post.title}
+                    </Link>
+                  </h2>
                   {post.content ? (
                     <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">
                       {post.content}

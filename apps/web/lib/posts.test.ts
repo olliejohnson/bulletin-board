@@ -1,19 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 
-const { findMany, create } = vi.hoisted(() => ({
+const { findMany, create, findUnique } = vi.hoisted(() => ({
   findMany: vi.fn(),
   create: vi.fn(),
+  findUnique: vi.fn(),
 }))
 
 vi.mock("@/lib/prisma", () => ({
-  prisma: { post: { findMany, create } },
+  prisma: { post: { findMany, create, findUnique } },
 }))
 
-import { getFeed, createPost } from "./posts"
+import { getFeed, createPost, getPost } from "./posts"
 
 beforeEach(() => {
   findMany.mockReset()
   create.mockReset()
+  findUnique.mockReset()
 })
 
 describe("getFeed", () => {
@@ -51,5 +53,20 @@ describe("createPost", () => {
         categories: { connect: { id: "c1" } },
       },
     })
+  })
+})
+
+describe("getPost", () => {
+  it("fetches a post by id with author and categories", () => {
+    getPost("p1")
+    expect(findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: "p1" },
+        include: expect.objectContaining({
+          author: expect.anything(),
+          categories: expect.anything(),
+        }),
+      })
+    )
   })
 })
