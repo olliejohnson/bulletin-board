@@ -185,7 +185,7 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     id: "actions",
-    cell: ({ row, column: { id }, table }) => {
+    cell: ({ row, table }) => {
       const user = row.original
 
       return (

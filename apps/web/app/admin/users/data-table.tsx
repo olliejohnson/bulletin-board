@@ -32,6 +32,7 @@ import { Button } from "@workspace/ui/components/button"
 import { IconRefresh } from "@tabler/icons-react"
 
 declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface TableMeta<TData extends RowData> {
     updateData: () => void
   }
