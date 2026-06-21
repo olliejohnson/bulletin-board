@@ -47,7 +47,7 @@ export function NewUserButton() {
       onSubmit: schema,
     },
     onSubmit: async ({ value }) => {
-      authClient.admin.createUser({
+      await authClient.admin.createUser({
         name: value.name,
         email: value.email,
         password: value.password,

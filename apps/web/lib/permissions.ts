@@ -19,5 +19,5 @@ export function isPostAuthor(user: AuthzUser, post: Owned): boolean {
 }
 
 export function canChangePostCategory(user: AuthzUser, post: Owned): boolean {
-  return isPostAuthor(user, post)
+  return isPostAuthor(user, post) || isAdmin(user)
 }

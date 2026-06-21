@@ -28,7 +28,7 @@ describe("canChangePostCategory", () => {
     expect(canChangePostCategory(author, post)).toBe(true)
     expect(canChangePostCategory(other, post)).toBe(false)
     // admins are not the author here — category change is author-only for now
-    expect(canChangePostCategory(admin, post)).toBe(false)
+    expect(canChangePostCategory(admin, post)).toBe(true)
     expect(canChangePostCategory(null, post)).toBe(false)
   })
 })
