@@ -1,0 +1,32 @@
+* @olliejohnson @jacoberrol
+
+*.test.ts @jacoberrol
+*.test.tsx @jacoberrol
+
+/apps/web/app/admin @olliejohnson
+/apps/web/app/sign-in @olliejohnson
+/apps/web/app/sign-up @olliejohnson
+/apps/web/app/api @olliejohnson
+/apps/web/app/.well-known @olliejohnson
+/apps/web/app/board @jacoberrol
+/apps/web/app/demo @jacoberrol
+
+/apps/web/components/admin @olliejohnson
+/apps/web/components/data-table-column-header.tsx
+/apps/web/components/data-table-pagination.tsx
+/apps/web/components/data-table-view-options.tsx
+/apps/web/components/github-button.tsx
+/apps/web/components/login-form.tsx
+/apps/web/components/relative-date.tsx
+/apps/web/components/signup-form.tsx
+/apps/web/components/theme-provider.tsx
+
+/apps/web/e2e @jacoberrol
+
+/apps/web/lib/auth-client.ts @olliejohnson
+/apps/web/lib/auth.ts @olliejohnson
+/apps/web/lib/prisma.ts @olliejohnson
+/apps/web/lib/categories.ts @jacoberrol
+/apps/web/lib/permission.ts @jacoberrol
+/apps/web/lib/posts.ts @jacoberrol
+/apps/web/lib/session.ts @jacoberrol
