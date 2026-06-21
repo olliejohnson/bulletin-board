@@ -6,7 +6,6 @@ import {
   IconChevronsRight,
 } from "@tabler/icons-react"
 
-import { Buttons } from "@testing-library/user-event/dist/cjs/system/pointer/buttons.js"
 import {
   Select,
   SelectContent,

@@ -1,3 +1,5 @@
+"use server"
+
 import { User } from "@/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
 import * as React from "react"
@@ -5,7 +7,7 @@ import { DataTable } from "./data-table"
 import { columns } from "./columns"
 import { SiteHeader } from "@/components/admin/dashboard/site-header"
 
-async function getData(): Promise<User[]> {
+export async function getData(): Promise<User[]> {
   return prisma.user.findMany()
 }
 

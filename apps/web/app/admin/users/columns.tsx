@@ -2,12 +2,16 @@
 
 import { DataTableColumnHeader } from "@/components/data-table-column-header"
 import { User } from "@/generated/prisma/client"
+import { authClient } from "@/lib/auth-client"
 import {
-  IconArrowsSort,
-  IconArrowsUpDown,
   IconCircleCheck,
   IconCircleX,
   IconDotsVertical,
+  IconHammer,
+  IconShield,
+  IconUser,
+  IconUserCog,
+  IconUserQuestion,
 } from "@tabler/icons-react"
 import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@workspace/ui/components/badge"
@@ -60,6 +64,37 @@ export const columns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Email" />
     ),
+  },
+  {
+    accessorKey: "role",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Role" />
+    ),
+    cell: ({ row }) => {
+      const role = row.getValue("role") as "user" | "admin"
+      if (role === "user") {
+        return (
+          <Badge variant="secondary">
+            <IconUser />
+            User
+          </Badge>
+        )
+      } else if (role === "admin") {
+        return (
+          <Badge variant="secondary">
+            <IconUserCog />
+            Admin
+          </Badge>
+        )
+      } else {
+        return (
+          <Badge variant="secondary">
+            <IconUserQuestion />
+            Invalid
+          </Badge>
+        )
+      }
+    },
   },
   {
     accessorKey: "emailVerified",
@@ -117,7 +152,7 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, column: { id }, table }) => {
       const user = row.original
 
       return (
@@ -137,8 +172,39 @@ export const columns: ColumnDef<User>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View Details</DropdownMenuItem>
-            <DropdownMenuItem>Ban User</DropdownMenuItem>
-            <DropdownMenuItem>Impersonate User</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={async () => {
+                if (user.banned) {
+                  await authClient.admin.unbanUser({
+                    userId: user.id,
+                  })
+                } else {
+                  await authClient.admin.banUser({
+                    userId: user.id,
+                  })
+                }
+                table.options.meta?.updateData()
+              }}
+            >
+              {user.banned ? (
+                <span className="flex items-center justify-between space-x-3">
+                  <IconShield /> Unban User
+                </span>
+              ) : (
+                <span className="flex items-center justify-between space-x-3">
+                  <IconHammer /> Ban User
+                </span>
+              )}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                authClient.admin.impersonateUser({
+                  userId: user.id,
+                })
+              }}
+            >
+              Impersonate User
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Delete User</DropdownMenuItem>
           </DropdownMenuContent>

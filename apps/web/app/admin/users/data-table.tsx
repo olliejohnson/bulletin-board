@@ -1,5 +1,6 @@
 "use client"
 
+import { NewUserButton } from "@/components/admin/users/new-user-button"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { DataTableViewOptions } from "@/components/data-table-view-options"
 import {
@@ -10,17 +11,11 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  RowData,
   SortingState,
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table"
-import { Button } from "@workspace/ui/components/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu"
 import { Input } from "@workspace/ui/components/input"
 
 import {
@@ -32,6 +27,13 @@ import {
   TableRow,
 } from "@workspace/ui/components/table"
 import { useState } from "react"
+import { getData } from "./page"
+
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends RowData> {
+    updateData: () => void
+  }
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -40,8 +42,10 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
+  data: initialData,
 }: DataTableProps<TData, TValue>) {
+  const [data, setData] = useState(initialData)
+
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -64,6 +68,11 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
     },
+    meta: {
+      updateData: async () => {
+        setData((await getData()) as TData[])
+      },
+    },
   })
 
   return (
@@ -77,7 +86,10 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <DataTableViewOptions table={table} />
+        <div className="ml-auto flex items-center space-x-1.5">
+          <NewUserButton />
+          <DataTableViewOptions table={table} />
+        </div>
       </div>
       <div className="overflow-hidden rounded-md border">
         <Table>
