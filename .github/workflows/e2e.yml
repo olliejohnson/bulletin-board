@@ -41,7 +41,7 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -50,6 +50,13 @@ jobs:
         run: pnpm exec prisma generate
       - name: Migrate + seed test DB
         run: pnpm exec prisma migrate deploy && pnpm exec prisma db seed
+      # Cache the Chromium download (~90MB) across runs.
+      - name: Cache Playwright browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: playwright-${{ runner.os }}-
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium
       - name: Run e2e
