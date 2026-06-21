@@ -36,6 +36,8 @@ describe("Sign-in page", () => {
       screen.getByRole("heading", { name: "Login to your account" })
     ).toBeInTheDocument()
     expect(screen.getByLabelText("Username")).toBeInTheDocument()
+    expect(screen.getByLabelText("Password")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Login" })).toBeInTheDocument()
   })
 
   it("shows a validation error and does not call the API for a short password", async () => {
@@ -45,6 +47,54 @@ describe("Sign-in page", () => {
     await user.type(screen.getByLabelText("Password"), "short")
     await user.click(screen.getByRole("button", { name: "Login" }))
 
+    expect(
+      await screen.findByText("Password must be at least 8 characters long.")
+    ).toBeInTheDocument()
+    expect(signInUsername).not.toHaveBeenCalled()
+  })
+
+  it("shows a validation error and does not call the API for a short username", async () => {
+    const user = userEvent.setup()
+    render(<Page />)
+    await user.type(screen.getByLabelText("Username"), "sh")
+    await user.type(screen.getByLabelText("Password"), "password")
+    await user.click(screen.getByRole("button", { name: "Login" }))
+
+    expect(
+      await screen.findByText("Username must be at least 3 characters long.")
+    ).toBeInTheDocument()
+    expect(signInUsername).not.toHaveBeenCalled()
+  })
+
+  it("shows a validation error and does not call the API for a long username", async () => {
+    const user = userEvent.setup()
+    render(<Page />)
+    await user.type(
+      screen.getByLabelText("Username"),
+      "verylongusernamethatisoverthirtycharacterslong"
+    )
+    await user.type(screen.getByLabelText("Password"), "password")
+    await user.click(screen.getByRole("button", { name: "Login" }))
+
+    expect(
+      await screen.findByText("Username must be at most 30 characters long.")
+    ).toBeInTheDocument()
+    expect(signInUsername).not.toHaveBeenCalled()
+  })
+
+  it("shows both validation warnings if the username and password are invalid and does not call the API", async () => {
+    const user = userEvent.setup()
+    render(<Page />)
+    await user.type(
+      screen.getByLabelText("Username"),
+      "verylongusernamethatisoverthirtycharacterslong"
+    )
+    await user.type(screen.getByLabelText("Password"), "short")
+    await user.click(screen.getByRole("button", { name: "Login" }))
+
+    expect(
+      await screen.findByText("Username must be at most 30 characters long.")
+    ).toBeInTheDocument()
     expect(
       await screen.findByText("Password must be at least 8 characters long.")
     ).toBeInTheDocument()
