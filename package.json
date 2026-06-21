@@ -10,6 +10,7 @@
     "format:check": "prettier --check .",
     "typecheck": "turbo typecheck",
     "check": "prettier --check . && turbo run lint typecheck test",
+    "e2e": "pnpm --filter web run e2e:local",
     "prepare": "husky"
   },
   "devDependencies": {
