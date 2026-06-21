@@ -3,7 +3,7 @@ import { IconMessageCircle } from "@tabler/icons-react"
 import { getCategories } from "@/lib/categories"
 import { getFeed } from "@/lib/posts"
 import { BoardHeader } from "./board-header"
-import { Compose } from "./compose"
+import { Composer } from "./composer"
 import { authorName, timeAgo } from "./format"
 
 export default async function Page() {
@@ -13,7 +13,7 @@ export default async function Page() {
     <div className="flex min-h-svh flex-col">
       <BoardHeader />
 
-      <div className="mx-auto grid w-full max-w-6xl flex-1 gap-6 px-4 py-6 lg:grid-cols-[12rem_1fr]">
+      <div className="mx-auto grid w-full max-w-6xl flex-1 gap-6 px-4 py-6 lg:grid-cols-[12rem_1fr_16rem]">
         {/* Left: categories */}
         <aside className="hidden lg:block">
           <p className="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
@@ -38,11 +38,13 @@ export default async function Page() {
           </nav>
         </aside>
 
-        {/* Center: compose + feed */}
-        <main className="min-w-0">
-          <Compose categories={categories} />
-
-          <ul className="mt-6 space-y-4">
+        {/* Center (feed) + right (filter tile + compose trigger) */}
+        <Composer
+          categories={categories}
+          filterName="all"
+          filterDescription="Every category, newest first."
+        >
+          <ul className="space-y-4">
             {posts.length === 0 ? (
               <li className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
                 No posts yet. Be the first to post.
@@ -79,7 +81,7 @@ export default async function Page() {
               ))
             )}
           </ul>
-        </main>
+        </Composer>
       </div>
     </div>
   )

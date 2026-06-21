@@ -20,7 +20,7 @@ test("only the post author sees the category editor", async ({ browser }) => {
   await signUp(author, `author${stamp}`)
 
   const title = `Authz post ${stamp}`
-  await author.getByRole("button", { name: "New post" }).click()
+  await author.getByRole("button", { name: "Post a Topic" }).click()
   await author.getByPlaceholder("Title").fill(title)
   await author.getByLabel("Category").selectOption({ label: "~General" })
   await author.getByRole("button", { name: "Post", exact: true }).click()

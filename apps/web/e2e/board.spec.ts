@@ -25,7 +25,7 @@ test("sign up, post to General, and open the post", async ({ page }) => {
 
   // --- compose a post in General (reveal the form, then submit) ---
   const title = `E2E post ${stamp}`
-  await page.getByRole("button", { name: "New post" }).click()
+  await page.getByRole("button", { name: "Post a Topic" }).click()
   await page.getByPlaceholder("Title").fill(title)
   await page.getByLabel("Category").selectOption({ label: "~General" })
   await page.getByRole("button", { name: "Post", exact: true }).click()
