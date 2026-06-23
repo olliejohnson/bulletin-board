@@ -14,7 +14,8 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "e2e": "playwright test",
-    "e2e:local": "bash e2e/run-local.sh"
+    "e2e:local": "bash e2e/run-local.sh",
+    "prisma:generate": "prisma generate --schema=./apps/web/prisma/prisma.schema"
   },
   "dependencies": {
     "@better-auth/api-key": "^1.6.19",
