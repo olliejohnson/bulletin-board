@@ -113,6 +113,7 @@ export const columns: ColumnDef<CategoryTable>[] = [
             <AlertDialogFooter>
               <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
               <AlertDialogAction
+                variant="destructive"
                 onClick={async () => {
                   await deleteCategory(category.id)
                   table.options.meta?.updateData()

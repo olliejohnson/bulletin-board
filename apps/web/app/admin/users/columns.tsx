@@ -279,6 +279,7 @@ export const columns: ColumnDef<User>[] = [
             <AlertDialogFooter>
               <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
               <AlertDialogAction
+                variant="destructive"
                 onClick={async () => {
                   await authClient.admin.removeUser({
                     userId: user.id,

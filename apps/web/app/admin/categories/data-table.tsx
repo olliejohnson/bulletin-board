@@ -90,7 +90,7 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
         <div className="ml-auto flex items-center space-x-1.5">
-          <NewCategoryButton />
+          <NewCategoryButton table={table} />
           <DataTableViewOptions table={table} />
           <Button
             className="hidden h-8 lg:flex"
