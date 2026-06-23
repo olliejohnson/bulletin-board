@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { IconMessageCircle, IconTrash } from "@tabler/icons-react"
+import { IconMessageCircle } from "@tabler/icons-react"
 import { getCategories } from "@/lib/categories"
 import { getFeed } from "@/lib/posts"
 import { BoardHeader } from "./board-header"
