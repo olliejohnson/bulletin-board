@@ -27,6 +27,7 @@ dist
 # misc
 .DS_Store
 *.pem
+TODO.md
 
 # debug
 npm-debug.log*
