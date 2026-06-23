@@ -19,7 +19,7 @@ class MockPointerEvent extends Event {
         this.ctrlKey = props.ctrlKey
       }
     }
-    this.pointerType = props?.pointerType || "mouse"
+    this.pointerType = props?.pointerType ?? "mouse"
   }
 }
 window.PointerEvent = MockPointerEvent as never

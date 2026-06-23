@@ -12,7 +12,8 @@
         "DATABASE_URL",
         "E2E_PORT",
         "CI",
-        "SHADOW_DATABASE_URL"
+        "SHADOW_DATABASE_URL",
+        "NODE_ENV"
       ]
     },
     "lint": {

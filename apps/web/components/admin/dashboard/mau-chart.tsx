@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
@@ -14,7 +13,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@workspace/ui/components/chart"
-import { useMemo, useState } from "react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 const chartData = [
@@ -122,16 +120,6 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export default function MauChart() {
-  const [activeChart, setActiveChart] =
-    useState<keyof typeof chartConfig>("users")
-
-  const total = useMemo(
-    () => ({
-      users: chartData.reduce((acc, curr) => acc + curr.users, 0),
-    }),
-    []
-  )
-
   const chart = "users" as keyof typeof chartConfig
 
   return (
