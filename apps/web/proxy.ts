@@ -3,7 +3,7 @@ import { getCurrentUser } from "@/lib/session"
 import { adminProxy } from "./app/admin/_proxy"
 
 export async function proxy(request: NextRequest) {
-  const user = getCurrentUser()
+  const user = await getCurrentUser()
 
   if (!user) {
     return NextResponse.redirect(new URL("/sign-in", request.url))
