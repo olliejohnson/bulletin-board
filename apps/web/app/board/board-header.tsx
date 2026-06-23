@@ -1,6 +1,14 @@
 import Link from "next/link"
 import { IconFoldersFilled } from "@tabler/icons-react"
 import { getCurrentUser } from "@/lib/session"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu"
 
 // Shared board header (server component). Fetches the session itself so pages
 // don't have to thread the viewer through.
@@ -18,7 +26,48 @@ export async function BoardHeader() {
           Bulletin Board
         </Link>
         <div className="ml-auto flex items-center gap-3 text-sm">
-          <span className="text-muted-foreground">{viewer}</span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <span className="text-muted-foreground hover:cursor-pointer hover:underline">
+                {viewer}
+              </span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-41" align="start">
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+              </DropdownMenuGroup>
+              {user?.role === "admin" ? (
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>Admin</DropdownMenuLabel>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/admin/dashboard"
+                      className="hover:cursor-pointer"
+                    >
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin/users" className="hover:cursor-pointer">
+                      Users
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/admin/categories"
+                      className="hover:cursor-pointer"
+                    >
+                      Categories
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              ) : (
+                <></>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Link href="/log-out" className="hover:underline">
             Log out
           </Link>

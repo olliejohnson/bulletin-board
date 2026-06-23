@@ -1,6 +1,5 @@
 "use client"
 
-import { NewUserButton } from "@/components/admin/users/new-user-button"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { DataTableViewOptions } from "@/components/data-table-view-options"
 import {
@@ -30,6 +29,7 @@ import { useState } from "react"
 import { getData } from "./page"
 import { Button } from "@workspace/ui/components/button"
 import { IconRefresh } from "@tabler/icons-react"
+import { NewCategoryButton } from "@/components/admin/categories/new-category-button"
 
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -82,15 +82,15 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter names..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
         <div className="ml-auto flex items-center space-x-1.5">
-          <NewUserButton table={table} />
+          <NewCategoryButton table={table} />
           <DataTableViewOptions table={table} />
           <Button
             className="hidden h-8 lg:flex"

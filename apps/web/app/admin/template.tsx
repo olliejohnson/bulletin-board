@@ -1,11 +1,14 @@
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar"
 import { AppSidebar } from "@/components/admin/app-sidebar"
+import { getCurrentUser } from "@/lib/session"
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const user = await getCurrentUser()
+
   return (
     <SidebarProvider
       style={
@@ -15,7 +18,7 @@ export default function AdminLayout({
         } as React.CSSProperties
       }
     >
-      <AppSidebar />
+      <AppSidebar user={user!} />
       <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>
   )

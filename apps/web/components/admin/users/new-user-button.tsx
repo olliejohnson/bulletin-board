@@ -22,6 +22,9 @@ import { Field } from "@workspace/ui/components/field"
 import z from "zod"
 import { Input } from "@workspace/ui/components/input"
 import { Checkbox } from "@workspace/ui/components/checkbox"
+import { useState } from "react"
+import { Table } from "@tanstack/react-table"
+import { Spinner } from "@workspace/ui/components/spinner"
 
 const schema = z.object({
   name: z.string(),
@@ -34,7 +37,10 @@ const schema = z.object({
   isAdmin: z.boolean(),
 })
 
-export function NewUserButton() {
+export function NewUserButton<TData>({ table }: { table: Table<TData> }) {
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+
   const form = useForm({
     defaultValues: {
       name: "",
@@ -47,6 +53,7 @@ export function NewUserButton() {
       onSubmit: schema,
     },
     onSubmit: async ({ value }) => {
+      setLoading(true)
       await authClient.admin.createUser({
         name: value.name,
         email: value.email,
@@ -56,29 +63,33 @@ export function NewUserButton() {
           username: value.username,
         },
       })
+      setLoading(false)
+      setOpen(false)
+      table.options.meta?.updateData()
     },
   })
 
   return (
-    <Dialog>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          form.handleSubmit()
-        }}
-      >
-        <DialogTrigger asChild>
-          <Button variant="default" size="sm" className="hidden h-8 lg:flex">
-            <IconPlus />
-            New User
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>New User</DialogTitle>
-            <DialogDescription>Create a new user.</DialogDescription>
-          </DialogHeader>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="default" size="sm" className="hidden h-8 lg:flex">
+          <IconPlus />
+          New User
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle>New User</DialogTitle>
+          <DialogDescription>Create a new user.</DialogDescription>
+        </DialogHeader>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
+          }}
+          id="new-user-form"
+        >
           <FieldGroup>
             <form.Field name="name">
               {(field) => (
@@ -190,11 +201,20 @@ export function NewUserButton() {
               )}
             </form.Field>
           </FieldGroup>
-          <DialogFooter>
-            <Button type="submit">Create User</Button>
-          </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+        <DialogFooter>
+          <Button type="submit" form="new-user-form">
+            {loading ? (
+              <>
+                <Spinner className="size-4" />
+                Processing
+              </>
+            ) : (
+              "Create User"
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   )
 }

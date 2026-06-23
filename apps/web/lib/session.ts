@@ -8,6 +8,11 @@ export async function getCurrentUser() {
   return data?.user ?? null
 }
 
+export async function getSession() {
+  const data = await auth.api.getSession({ headers: await headers() })
+  return data?.session ?? null
+}
+
 export type CurrentUser = NonNullable<
   Awaited<ReturnType<typeof getCurrentUser>>
 >

@@ -1,5 +1,6 @@
 "use client"
 
+import { revalidate } from "@/lib/actions"
 import { DataTableColumnHeader } from "@/components/data-table-column-header"
 import { Relative } from "@/components/relative-date"
 import { User } from "@/generated/prisma/client"
@@ -10,6 +11,7 @@ import {
   IconDotsVertical,
   IconHammer,
   IconShield,
+  IconTrash,
   IconUser,
   IconUserCog,
   IconUserQuestion,
@@ -33,6 +35,18 @@ import {
 } from "@workspace/ui/components/tooltip"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@workspace/ui/components/alert-dialog"
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -185,69 +199,99 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     id: "actions",
-    cell: ({ row, column: { id }, table }) => {
+    cell: ({ row, table }) => {
       const user = row.original
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <IconDotsVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
-            >
-              Copy User ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                redirect(`/admin/users/${user.id}`)
-              }}
-            >
-              View Details
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={async () => {
-                if (user.banned) {
-                  await authClient.admin.unbanUser({
+        <AlertDialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <IconDotsVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(user.id)}
+              >
+                Copy User ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  redirect(`/admin/users/${user.id}`)
+                }}
+              >
+                View Details
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={async () => {
+                  if (user.banned) {
+                    await authClient.admin.unbanUser({
+                      userId: user.id,
+                    })
+                  } else {
+                    await authClient.admin.banUser({
+                      userId: user.id,
+                    })
+                  }
+                  table.options.meta?.updateData()
+                }}
+              >
+                {user.banned ? (
+                  <span className="flex items-center justify-between space-x-3">
+                    <IconShield /> Unban User
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-between space-x-3">
+                    <IconHammer /> Ban User
+                  </span>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={async () => {
+                  await authClient.admin.impersonateUser({
                     userId: user.id,
                   })
-                } else {
-                  await authClient.admin.banUser({
+                  revalidate("/admin/users")
+                }}
+              >
+                Impersonate User
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem>Delete User</DropdownMenuItem>
+              </AlertDialogTrigger>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <AlertDialogContent size="sm">
+            <AlertDialogHeader>
+              <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+                <IconTrash />
+              </AlertDialogMedia>
+              <AlertDialogTitle>Delete user?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete this user.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                variant="destructive"
+                onClick={async () => {
+                  await authClient.admin.removeUser({
                     userId: user.id,
                   })
-                }
-                table.options.meta?.updateData()
-              }}
-            >
-              {user.banned ? (
-                <span className="flex items-center justify-between space-x-3">
-                  <IconShield /> Unban User
-                </span>
-              ) : (
-                <span className="flex items-center justify-between space-x-3">
-                  <IconHammer /> Ban User
-                </span>
-              )}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                authClient.admin.impersonateUser({
-                  userId: user.id,
-                })
-              }}
-            >
-              Impersonate User
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Delete User</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+                  table.options.meta?.updateData()
+                }}
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )
     },
   },

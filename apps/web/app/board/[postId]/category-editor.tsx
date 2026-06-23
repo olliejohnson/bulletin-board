@@ -8,13 +8,13 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select"
 import z from "zod"
 import { useForm } from "@tanstack/react-form"
 import { Field, FieldLabel } from "@workspace/ui/components/field"
+import LoadingDots from "@/components/loading-dots"
 
 const initialState: UpdateCategoryState = {}
 
@@ -115,7 +115,15 @@ export function CategoryEditor({
           disabled={pending}
           className="h-7"
         >
-          {pending ? "Saving…" : "Change"}
+          {/*pending ? "Saving…" : "Change"*/}
+          {pending ? (
+            <div className="flex flex-2 items-end justify-between space-x-1.5">
+              <p>Saving</p>
+              <LoadingDots />
+            </div>
+          ) : (
+            "Change"
+          )}
         </Button>
         {state.error ? (
           <span className="text-xs text-destructive">{state.error}</span>

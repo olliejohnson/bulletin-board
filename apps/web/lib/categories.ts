@@ -16,6 +16,26 @@ export function getCategories() {
   })
 }
 
+export async function createCategory(props: {
+  name: string
+  description?: string | undefined
+}) {
+  await prisma.category.create({
+    data: {
+      name: props.name,
+      description: props.description ?? "",
+    },
+  })
+}
+
+export async function deleteCategory(props: { id: string }) {
+  await prisma.category.delete({
+    where: {
+      id: props.id,
+    },
+  })
+}
+
 export async function categoryExists(id: string): Promise<boolean> {
   const found = await prisma.category.findUnique({
     where: { id },

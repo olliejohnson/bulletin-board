@@ -19,10 +19,10 @@ class MockPointerEvent extends Event {
         this.ctrlKey = props.ctrlKey
       }
     }
-    this.pointerType = props?.pointerType || "mouse"
+    this.pointerType = props?.pointerType ?? "mouse"
   }
 }
-window.PointerEvent = MockPointerEvent as any
+window.PointerEvent = MockPointerEvent as never
 window.HTMLElement.prototype.scrollIntoView = vi.fn()
 window.HTMLElement.prototype.hasPointerCapture = vi.fn()
 window.HTMLElement.prototype.releasePointerCapture = vi.fn()
@@ -34,7 +34,7 @@ const categories = [
 
 describe("CategoryEditor", () => {
   it("renders the category options and a Change button", () => {
-    const { container } = render(
+    render(
       <CategoryEditor
         postId="p1"
         currentCategoryId="c1"
