@@ -1,13 +1,19 @@
 import Link from "next/link"
-import { IconMessageCircle } from "@tabler/icons-react"
+import { IconMessageCircle, IconTrash } from "@tabler/icons-react"
 import { getCategories } from "@/lib/categories"
 import { getFeed } from "@/lib/posts"
 import { BoardHeader } from "./board-header"
 import { ComposeForm } from "./compose-form"
 import { authorName, timeAgo } from "./format"
+import { PostContext } from "./context"
+import { getCurrentUser } from "@/lib/session"
 
 export default async function Page() {
-  const [posts, categories] = await Promise.all([getFeed(), getCategories()])
+  const [posts, categories, user] = await Promise.all([
+    getFeed(),
+    getCategories(),
+    getCurrentUser(),
+  ])
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -49,33 +55,39 @@ export default async function Page() {
               </li>
             ) : (
               posts.map((post) => (
-                <li key={post.id} className="border-b pb-4 last:border-b-0">
-                  <h2 className="font-medium">
-                    <Link
-                      href={`/board/${post.id}`}
-                      className="hover:underline"
-                    >
-                      {post.title}
-                    </Link>
-                  </h2>
-                  {post.content ? (
-                    <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">
-                      {post.content}
-                    </p>
-                  ) : null}
-                  <p className="mt-1.5 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-                    {post.categories.map((c) => (
-                      <span key={c.id} className="text-foreground">
-                        ~{c.name}
+                <PostContext
+                  key={post.id}
+                  post={{ id: post.id, authorId: post.authorId }}
+                  user={user}
+                >
+                  <li key={post.id} className="border-b pb-4 last:border-b-0">
+                    <h2 className="font-medium">
+                      <Link
+                        href={`/board/${post.id}`}
+                        className="hover:underline"
+                      >
+                        {post.title}
+                      </Link>
+                    </h2>
+                    {post.content ? (
+                      <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">
+                        {post.content}
+                      </p>
+                    ) : null}
+                    <p className="mt-1.5 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+                      {post.categories.map((c) => (
+                        <span key={c.id} className="text-foreground">
+                          ~{c.name}
+                        </span>
+                      ))}
+                      <span>by {authorName(post.author)}</span>
+                      <span>{timeAgo(post.createdAt)}</span>
+                      <span className="inline-flex items-center gap-1">
+                        <IconMessageCircle className="size-3.5" />0
                       </span>
-                    ))}
-                    <span>by {authorName(post.author)}</span>
-                    <span>{timeAgo(post.createdAt)}</span>
-                    <span className="inline-flex items-center gap-1">
-                      <IconMessageCircle className="size-3.5" />0
-                    </span>
-                  </p>
-                </li>
+                    </p>
+                  </li>
+                </PostContext>
               ))
             )}
           </ul>
