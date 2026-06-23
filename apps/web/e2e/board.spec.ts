@@ -26,7 +26,8 @@ test("sign up, post to General, and open the post", async ({ page }) => {
   // --- compose a post in General ---
   const title = `E2E post ${stamp}`
   await page.getByPlaceholder("Title").fill(title)
-  await page.getByLabel("Category").selectOption({ label: "~General" })
+  await page.getByLabel("Category").click()
+  await page.getByRole("option", { name: "~General" }).click()
   await page.getByRole("button", { name: "New post" }).click()
 
   // --- it appears in the feed; open the detail view ---
