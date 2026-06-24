@@ -8,13 +8,16 @@ import { authClient } from "@/lib/auth-client"
 import {
   IconCircleCheck,
   IconCircleX,
+  IconClipboard,
   IconDotsVertical,
+  IconEye,
   IconHammer,
   IconShield,
   IconTrash,
   IconUser,
   IconUserCog,
   IconUserQuestion,
+  IconUserShare,
 } from "@tabler/icons-react"
 import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@workspace/ui/components/badge"
@@ -216,6 +219,7 @@ export const columns: ColumnDef<User>[] = [
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(user.id)}
               >
+                <IconClipboard />
                 Copy User ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -224,6 +228,7 @@ export const columns: ColumnDef<User>[] = [
                   redirect(`/admin/users/${user.id}`)
                 }}
               >
+                <IconEye />
                 View Details
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -241,13 +246,13 @@ export const columns: ColumnDef<User>[] = [
                 }}
               >
                 {user.banned ? (
-                  <span className="flex items-center justify-between space-x-3">
+                  <>
                     <IconShield /> Unban User
-                  </span>
+                  </>
                 ) : (
-                  <span className="flex items-center justify-between space-x-3">
+                  <>
                     <IconHammer /> Ban User
-                  </span>
+                  </>
                 )}
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -258,11 +263,15 @@ export const columns: ColumnDef<User>[] = [
                   revalidate("/admin/users")
                 }}
               >
-                Impersonate User
+                <IconUserShare />
+                Impersonate
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <AlertDialogTrigger asChild>
-                <DropdownMenuItem>Delete User</DropdownMenuItem>
+                <DropdownMenuItem variant="destructive">
+                  <IconTrash />
+                  Delete User
+                </DropdownMenuItem>
               </AlertDialogTrigger>
             </DropdownMenuContent>
           </DropdownMenu>
