@@ -1,5 +1,12 @@
 import Link from "next/link"
-import { IconFoldersFilled } from "@tabler/icons-react"
+import {
+  IconCategory,
+  IconFoldersFilled,
+  IconLayout2,
+  IconSettings2,
+  IconUser,
+  IconUsers,
+} from "@tabler/icons-react"
 import { getCurrentUser } from "@/lib/session"
 import {
   DropdownMenu,
@@ -35,8 +42,14 @@ export async function BoardHeader() {
             <DropdownMenuContent className="w-41" align="start">
               <DropdownMenuGroup>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <IconUser />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <IconSettings2 />
+                  Settings
+                </DropdownMenuItem>
               </DropdownMenuGroup>
               {user?.role === "admin" ? (
                 <DropdownMenuGroup>
@@ -46,11 +59,13 @@ export async function BoardHeader() {
                       href="/admin/dashboard"
                       className="hover:cursor-pointer"
                     >
+                      <IconLayout2 />
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/admin/users" className="hover:cursor-pointer">
+                      <IconUsers />
                       Users
                     </Link>
                   </DropdownMenuItem>
@@ -59,6 +74,7 @@ export async function BoardHeader() {
                       href="/admin/categories"
                       className="hover:cursor-pointer"
                     >
+                      <IconCategory />
                       Categories
                     </Link>
                   </DropdownMenuItem>

@@ -1,7 +1,7 @@
 "use client"
 
 import { DataTableColumnHeader } from "@/components/data-table-column-header"
-import { IconDotsVertical, IconTrash } from "@tabler/icons-react"
+import { IconClipboard, IconDotsVertical, IconTrash } from "@tabler/icons-react"
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
@@ -87,16 +87,20 @@ export const columns: ColumnDef<CategoryTable>[] = [
                 <IconDotsVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(category.id)}
               >
+                <IconClipboard />
                 Copy Category ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <AlertDialogTrigger asChild>
-                <DropdownMenuItem>Delete Category</DropdownMenuItem>
+                <DropdownMenuItem variant="destructive">
+                  <IconTrash />
+                  Delete
+                </DropdownMenuItem>
               </AlertDialogTrigger>
             </DropdownMenuContent>
           </DropdownMenu>

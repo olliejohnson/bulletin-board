@@ -271,7 +271,7 @@ export const columns: ColumnDef<User>[] = [
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem variant="destructive">
                   <IconTrash />
-                  Delete User
+                  Delete
                 </DropdownMenuItem>
               </AlertDialogTrigger>
             </DropdownMenuContent>

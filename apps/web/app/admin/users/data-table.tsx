@@ -29,7 +29,21 @@ import {
 import { useState } from "react"
 import { getData } from "./page"
 import { Button } from "@workspace/ui/components/button"
-import { IconRefresh } from "@tabler/icons-react"
+import { IconRefresh, IconTrash } from "@tabler/icons-react"
+import { authClient } from "@/lib/auth-client"
+import { User } from "@/generated/prisma/client"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@workspace/ui/components/alert-dialog"
 
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -81,14 +95,57 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex justify-between space-x-2">
+          <Input
+            placeholder="Filter emails..."
+            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("email")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                disabled={table.getFilteredSelectedRowModel().rows.length < 1}
+              >
+                <IconTrash />
+                Delete User(s)
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent size="sm">
+              <AlertDialogHeader>
+                <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+                  <IconTrash />
+                </AlertDialogMedia>
+                <AlertDialogTitle>Delete user(s)?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete selected user(s).
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  onClick={async () => {
+                    await table
+                      .getFilteredSelectedRowModel()
+                      .rows.map((row) => row.original as User)
+                      .forEach(async (user) => {
+                        await authClient.admin.removeUser({
+                          userId: user.id,
+                        })
+                      })
+                    table.options.meta?.updateData()
+                  }}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
         <div className="ml-auto flex items-center space-x-1.5">
           <NewUserButton table={table} />
           <DataTableViewOptions table={table} />

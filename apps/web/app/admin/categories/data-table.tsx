@@ -28,8 +28,22 @@ import {
 import { useState } from "react"
 import { getData } from "./page"
 import { Button } from "@workspace/ui/components/button"
-import { IconRefresh } from "@tabler/icons-react"
+import { IconRefresh, IconTrash } from "@tabler/icons-react"
 import { NewCategoryButton } from "@/components/admin/categories/new-category-button"
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@workspace/ui/components/alert-dialog"
+import { Category } from "@/generated/prisma/client"
+import { deleteCategory } from "@/components/admin/categories/actions"
 
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -81,14 +95,68 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter names..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex justify-between space-x-2">
+          <Input
+            placeholder="Filter names..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                disabled={table.getFilteredSelectedRowModel().rows.length < 1}
+              >
+                <IconTrash />
+                Delete{" "}
+                {table.getFilteredSelectedRowModel().rows.length > 1
+                  ? "Categories"
+                  : "Category"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent size="sm">
+              <AlertDialogHeader>
+                <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+                  <IconTrash />
+                </AlertDialogMedia>
+                <AlertDialogTitle>
+                  Delete{" "}
+                  {table.getFilteredSelectedRowModel().rows.length > 1
+                    ? "categories"
+                    : "category"}
+                  ?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete selected{" "}
+                  {table.getFilteredSelectedRowModel().rows.length > 1
+                    ? "categories"
+                    : "category"}
+                  .
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  onClick={async () => {
+                    await table
+                      .getFilteredSelectedRowModel()
+                      .rows.map((row) => row.original as Category)
+                      .forEach(async (category) => {
+                        await deleteCategory(category.id)
+                      })
+                    table.options.meta?.updateData()
+                  }}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
         <div className="ml-auto flex items-center space-x-1.5">
           <NewCategoryButton table={table} />
           <DataTableViewOptions table={table} />
