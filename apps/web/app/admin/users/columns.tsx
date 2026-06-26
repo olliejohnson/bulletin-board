@@ -260,7 +260,8 @@ export const columns: ColumnDef<User>[] = [
                   await authClient.admin.impersonateUser({
                     userId: user.id,
                   })
-                  revalidate("/admin/users")
+                  revalidate("/board")
+                  redirect("/board")
                 }}
               >
                 <IconUserShare />
